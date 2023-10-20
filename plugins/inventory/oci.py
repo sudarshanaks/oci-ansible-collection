@@ -1421,7 +1421,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                     network_interface["primary_ipv4_address"] = vnics[0].private_ip
                 else:
                     instance_vars["interface_primary"] = vnics[1].private_ip
-                    network_interface["name"] = "primary"
+                    network_interface["name"] = "secondary"
                     network_interface["primary_ipv4_address"] = vnics[1].private_ip
                 network_interfaces.append(network_interface)
                 if len(vnics) > 1:
@@ -1431,7 +1431,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                         instance_vars["interface_secondary"] = vnics[1].private_ip
                     else:
                         instance_vars["interface_secondary"] = vnics[0].private_ip
-                        network_interface["name"] = "secondary"
+                        network_interface["name"] = "primary"
                         network_interface["primary_ipv4_address"] = vnics[0].private_ip                        
                 # create inventory for instance for all vnics if primary_vnic_only option set to false
                 # else create inventory only if the vnic is primary vnic for the instance
