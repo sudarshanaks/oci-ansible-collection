@@ -1408,7 +1408,22 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                         vnic.id, vnic_attachment.instance_id
                     )
                 )
-
+                vnic_attachments = compute_client.list_vnic_attachments(
+                    compartment_id=instance.compartment_id,
+                    instance_id=instance.id
+                ).data
+                vnics = [virtual_nw_client.get_vnic(va.vnic_id).data for va in vnic_attachments]
+                if vnics[0].is_primary:
+                    instance_vars["interface_primary"] = vnics[0].private_ip
+                    instance_vars["interface_primary_is_primary"] = str(vnics[0].is_primary)+"nic0"
+                else:
+                    instance_vars["interface_primary"] = vnics[1].private_ip
+                    instance_vars["interface_primary_is_primary"] = str(vnics[0].is_primary)+"nic1"
+                if len(vnics) > 1:
+                    if not vnics[1].is_primary:
+                        instance_vars["interface_secondary"] = vnics[1].private_ip
+                    else:
+                        instance_vars["interface_secondary"] = vnics[0].private_ip
                 # create inventory for instance for all vnics if primary_vnic_only option set to false
                 # else create inventory only if the vnic is primary vnic for the instance
                 if not self._get_primary_vnic_only() or vnic.is_primary:
@@ -1456,6 +1471,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
                         instance_vars.update({"vnic_id": vnic.id})
                         instance_vars.update({"vnic": to_dict(vnic)})
+                        print(vnic_attachment)
+                        break
                         if getattr(vnic, "subnet_id", None):
                             instance_vars.update({"subnet_id": vnic.subnet_id})
                             instance_vars.update({"vcn_id": subnet.vcn_id})
