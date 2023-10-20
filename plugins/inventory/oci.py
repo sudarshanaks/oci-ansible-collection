@@ -1471,8 +1471,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
                         instance_vars.update({"vnic_id": vnic.id})
                         instance_vars.update({"vnic": to_dict(vnic)})
-                        print(vnic_attachment)
-                        break
                         if getattr(vnic, "subnet_id", None):
                             instance_vars.update({"subnet_id": vnic.subnet_id})
                             instance_vars.update({"vcn_id": subnet.vcn_id})
