@@ -1415,6 +1415,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 vnics = [virtual_nw_client.get_vnic(va.vnic_id).data for va in vnic_attachments]
                 network_interfaces = []
                 network_interface ={}
+                
                 if vnics[0].is_primary:
                     instance_vars["interface_primary"] = vnics[0].private_ip
                     network_interface["name"] = "primary" if vnics[0].is_primary else "secondary"
@@ -1438,6 +1439,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 # else create inventory only if the vnic is primary vnic for the instance
                 network_interfaces.append(network_interface)
                 instance_vars["network_interfaces"] = network_interfaces
+                instance_vars["virtual_host"] = instance.display_name
                 if not self._get_primary_vnic_only() or vnic.is_primary:
 
                     subnet = vlan = None
